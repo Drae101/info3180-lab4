@@ -30,12 +30,13 @@ def add_file():
     if not session.get('logged_in'):
         abort(401)
 
-    file_folder = ''
+    file_folder = app.config['UPLOAD_FOLDER']
 
     if request.method == 'POST':
         file = request.files['file']
         filename = secure_filename(file.filename)
         file.save(os.path.join(file_folder, filename))
+
 
         flash('File Saved')
         return redirect(url_for('home'))
