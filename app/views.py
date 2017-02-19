@@ -10,6 +10,7 @@ from flask import render_template, request, redirect, url_for, flash, session, a
 from werkzeug.utils import secure_filename
 
 
+
 ###
 # Routing for your application.
 ###
@@ -61,6 +62,27 @@ def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('home'))
+
+@app.route('/file_listing')
+def file_listing():
+    
+    if not session.get('logged_in'):
+        abort(401)
+    
+    rootdir = os.getcwd()
+    path = '/app/static/uploads'
+    print rootdir
+    jpgs = list()
+    uploads = list()
+    for subdir, dirs, files in os.walk(rootdir + path):
+        for file in files:
+            if file != '.gitkeep':
+                if file.endswith('.jpg') or file.endswith('.jpeg'):
+                    jpgs.append(file)
+                else:
+                    uploads.append(file)
+
+    return render_template('file_listings.html', path=path, jpgs=jpgs, uploads=uploads)
 
 
 ###
